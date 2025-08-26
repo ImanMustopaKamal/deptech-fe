@@ -1,6 +1,6 @@
 import { RxDotsHorizontal } from 'react-icons/rx'
 import { Row } from '@tanstack/react-table'
-import { TbTrash } from 'react-icons/tb'
+import { TbPencil, TbTrash } from 'react-icons/tb'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,7 +10,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useContext } from './context'
+import { useAdmin } from './context'
 import { adminSchema } from './schema'
 
 interface DataTableRowActionsProps<TData> {
@@ -22,7 +22,7 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const admin = adminSchema.parse(row.original)
 
-  const { setOpen, setCurrentRow } = useContext()
+  const { setOpen, setCurrentRow } = useAdmin()
 
   return (
     <DropdownMenu modal={false}>
@@ -44,7 +44,7 @@ export function DataTableRowActions<TData>({
         >
           Edit
           <DropdownMenuShortcut>
-            <TbTrash size={16} />
+            <TbPencil size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

@@ -27,7 +27,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/date-picker";
 import { useApi } from "@/hooks/use-api";
 import { useSession } from "next-auth/react";
-import { useContext } from "./context";
+import { useLeave } from "./context";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   id: z.number().optional(),
@@ -69,7 +70,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
 
   const { request } = useApi();
   const { data: session } = useSession();
-  const { reload } = useContext();
+  const { reload } = useLeave();
 
   const isEdit = !!currentRow;
   const form = useForm<FormValues>({
@@ -86,9 +87,18 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    console.log("Form values:", values);
+  const handleToast = (message: string) => {
+    toast(message, {
+      action: {
+        label: "Tutup",
+        onClick: () => {
+          console.log("tutup");
+        },
+      },
+    });
+  };
 
+  const onSubmit = async (values: FormValues) => {
     try {
       const { id, isEdit, ...rest } = values;
 
@@ -110,8 +120,10 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
         reload();
         form.reset();
         onOpenChange(false);
+        handleToast(res?.metaData?.message || "Success");
       }
-    } catch (error) {
+    } catch (error: any) {
+      handleToast(error?.metaData?.message || "Internal Server Error");
       console.error("Submit error:", error);
     }
   };
@@ -189,7 +201,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1">
                     <FormLabel className="col-span-2 text-right">
-                      Address
+                      Reason
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -213,6 +225,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                     <DatePicker
                       selected={field.value}
                       onSelect={field.onChange}
+                      disabled={false}
                     />
                     <FormMessage className="col-span-4 col-start-3" />
                   </FormItem>
@@ -229,6 +242,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                     <DatePicker
                       selected={field.value}
                       onSelect={field.onChange}
+                      disabled={false}
                     />
                     <FormMessage className="col-span-4 col-start-3" />
                   </FormItem>

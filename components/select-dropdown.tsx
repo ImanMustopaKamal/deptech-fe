@@ -28,11 +28,12 @@ export function SelectDropdown({
   placeholder,
   disabled,
   className = '',
-  isControlled = false,
+  isControlled = true,
 }: SelectDropdownProps) {
   const defaultState = isControlled
     ? { value: defaultValue, onValueChange }
     : { defaultValue, onValueChange }
+    
   return (
     <Select {...defaultState}>
       <FormControl>

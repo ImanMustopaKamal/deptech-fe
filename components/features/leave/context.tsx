@@ -54,7 +54,7 @@ export default function Provider({ children }: Props) {
   );
 }
 
-export const useContext = () => {
+export const useLeave = () => {
   const context = React.useContext(Context);
 
   if (!context) {

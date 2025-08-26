@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 
 type DialogType = 'create' | 'update' | 'delete' | 'import'
 
-interface ContextType {
+interface AdminContextType {
   open: DialogType | null
   setOpen: (str: DialogType | null) => void
   currentRow: Admin | null
@@ -17,7 +17,7 @@ interface ContextType {
   data: Admin[]
 }
 
-const Context = React.createContext<ContextType | null>(null)
+const AdminContext = React.createContext<AdminContextType | null>(null)
 
 interface Props {
   children: React.ReactNode
@@ -48,18 +48,18 @@ export default function Provider({ children }: Props) {
   }, [session])
 
   return (
-    <Context.Provider value={{ open, setOpen, currentRow, setCurrentRow, reload, data }}>
+    <AdminContext.Provider value={{ open, setOpen, currentRow, setCurrentRow, reload, data }}>
       {children}
-    </Context.Provider>
+    </AdminContext.Provider>
   )
 }
 
-export const useContext = () => {
-  const context = React.useContext(Context)
+export const useAdmin = () => {
+  const useAdmin = React.useContext(AdminContext)
 
-  if (!context) {
-    throw new Error('useContext has to be used within <Context>')
+  if (!useAdmin) {
+    throw new Error('useAdmin has to be used within <Context>')
   }
 
-  return context
+  return useAdmin
 }

@@ -17,7 +17,9 @@ export function useApi() {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      // throw new Error(await res.text());
+      const errorBody = await res.json().catch(() => null);
+      throw errorBody || { message: "Internal Server Error", status: res.status };
     }
     return res.json() as Promise<T>;
   }

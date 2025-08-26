@@ -57,12 +57,12 @@ export function ProfileDropdown() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {/* <DropdownMenuItem asChild>
-            <Link href={`/admin/${userSession.sub}`}>
+          <DropdownMenuItem asChild>
+            <Link href={`/profile`}>
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </Link>
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
           {/* <DropdownMenuItem asChild>
             <Link href='/settings'>
               Billing

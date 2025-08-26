@@ -8,8 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Admin } from "./schema";
-import { useContext } from "./context";
+import { useAdmin } from "./context";
 import { useApi } from "@/hooks/use-api";
+import { toast } from "sonner";
 
 interface Props {
   open: boolean;
@@ -20,19 +21,36 @@ interface Props {
 export function DeleteDialog({ open, onOpenChange, currentRow }: Props) {
   const [value, setValue] = useState("");
 
-  const { reload } = useContext();
+  const { reload } = useAdmin();
   const { request } = useApi();
 
-  const handleDelete = async () => {
-    if (value.trim() !== currentRow.email.toString()) return;
-
-    const res = await request(`/admin/${currentRow.id}`, {
-      method: "DELETE",
+  const handleToast = (message: string) => {
+    toast(message, {
+      action: {
+        label: "Tutup",
+        onClick: () => {
+          console.log("tutup");
+        },
+      },
     });
+  };
 
-    if (res.data !== undefined) {
-      reload();
-      onOpenChange(false);
+  const handleDelete = async () => {
+    try {
+      if (value.trim() !== currentRow.email.toString()) return;
+
+      const res = await request(`/admin/${currentRow.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.data !== undefined) {
+        reload();
+        onOpenChange(false);
+        handleToast(res?.metaData?.message || "Success");
+      }
+    } catch (error: any) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+      handleToast(error?.metaData?.message || "Internal Server Error");
     }
   };
 
