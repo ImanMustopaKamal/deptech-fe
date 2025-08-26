@@ -1,13 +1,13 @@
 "use client";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/features/leave/columns";
-import { useContext } from "@/components/features/leave/context";
+import { useLeave } from "@/components/features/leave/context";
 import { Dialogs } from "@/components/features/leave/dialogs";
 import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa";
 
 export default function Leave() {
-  const { setOpen, data } = useContext();
+  const { setOpen, data } = useLeave();
 
   return (
     <>

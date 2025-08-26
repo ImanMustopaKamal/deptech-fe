@@ -1,5 +1,5 @@
 "use client";
-import { useContext } from "@/components/features/admin/context";
+import { useAdmin } from "@/components/features/admin/context";
 import { Dialogs } from "@/components/features/admin/dialogs";
 import { columns } from "@/components/features/admin/columns";
 import { DataTable } from "@/components/data-table";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { FaPlus } from "react-icons/fa";
 
 export default function AdminPage() {
-  const { setOpen, data } = useContext();
+  const { setOpen, data } = useAdmin();
 
   return (
     <>

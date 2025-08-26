@@ -10,6 +10,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Employee } from "./schema";
 import { useEmployee } from "./employee-context";
 import { useApi } from "@/hooks/use-api";
+import { toast } from "sonner";
 
 interface Props {
   open: boolean;
@@ -27,16 +28,33 @@ export function EmployeeDeleteDialog({
   const { reload } = useEmployee();
   const { request } = useApi();
 
-  const handleDelete = async () => {
-    if (value.trim() !== currentRow.email.toString()) return;
-
-    const res = await request(`/employee/${currentRow.id}`, {
-      method: "DELETE",
+  const handleToast = (message: string) => {
+    toast(message, {
+      action: {
+        label: "Tutup",
+        onClick: () => {
+          console.log("tutup");
+        },
+      },
     });
+  };
 
-    if (res.data !== undefined) {
-      reload();
-      onOpenChange(false);
+  const handleDelete = async () => {
+    try {
+      if (value.trim() !== currentRow.email.toString()) return;
+
+      const res = await request(`/employee/${currentRow.id}`, {
+        method: "DELETE",
+      });
+
+      if (res.data !== undefined) {
+        reload();
+        onOpenChange(false);
+        handleToast(res?.metaData?.message || "Success");
+      }
+    } catch (error: any) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+      handleToast(error?.metaData?.message || "Internal Server Error");
     }
   };
 

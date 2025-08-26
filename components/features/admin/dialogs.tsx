@@ -1,9 +1,9 @@
-import { useContext } from './context'
+import { useAdmin } from './context'
 import { ActionDialog } from './action-dialog'
 import { DeleteDialog } from './delete-dialog'
 
 export function Dialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useContext()
+  const { open, setOpen, currentRow, setCurrentRow } = useAdmin()
   return (
     <>
       <ActionDialog

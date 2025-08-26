@@ -1,6 +1,6 @@
 import { RxDotsHorizontal } from 'react-icons/rx'
 import { Row } from '@tanstack/react-table'
-import { TbTrash } from 'react-icons/tb'
+import { TbPencil, TbTrash } from 'react-icons/tb'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -44,7 +44,7 @@ export function DataTableRowActions<TData>({
         >
           Edit
           <DropdownMenuShortcut>
-            <TbTrash size={16} />
+            <TbPencil size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

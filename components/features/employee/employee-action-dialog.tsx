@@ -26,6 +26,7 @@ import { Employee } from "./schema";
 import { Textarea } from "@/components/ui/textarea";
 import { useApi } from "@/hooks/use-api";
 import { useEmployee } from "./employee-context";
+import { toast } from "sonner";
 
 type DataForm = {
   id?: number | undefined;
@@ -83,13 +84,20 @@ export function EmployeeActionDialog({
     },
   });
 
-  const onSubmit = async (values: FormValues) => {
-    console.log("Form values:", values);
+  const handleToast = (message: string) => {
+    toast(message, {
+      action: {
+        label: "Tutup",
+        onClick: () => {
+          console.log("tutup");
+        },
+      },
+    });
+  };
 
+  const onSubmit = async (values: FormValues) => {
     try {
       const { id, isEdit, ...rest } = values;
-
-      console.log("Extracted values:", { isEdit, id, rest });
 
       const url = isEdit ? `/employee/${id}` : "/employee";
       const method = isEdit ? "PUT" : "POST";
@@ -98,21 +106,19 @@ export function EmployeeActionDialog({
         ...rest,
       };
 
-      console.log("Payload:", payload);
-
       const res = await request(url, {
         method: method,
         body: JSON.stringify(payload),
       });
 
-      console.log("Response:", res);
-
       if (res.data !== undefined) {
         reload();
         form.reset();
         onOpenChange(false);
+        handleToast(res?.metaData?.message || "Success");
       }
-    } catch (error) {
+    } catch (error: any) {
+      handleToast(error?.metaData?.message || "Internal Server Error");
       console.error("Submit error:", error);
     }
   };

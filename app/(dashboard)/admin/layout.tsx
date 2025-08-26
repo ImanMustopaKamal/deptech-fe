@@ -1,5 +1,5 @@
-import Provider from "@/components/features/admin/context"
+import AdminProvider from "@/components/features/admin/context"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return <Provider>{children}</Provider>
+  return <AdminProvider>{children}</AdminProvider>
 }

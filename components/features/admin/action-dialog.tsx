@@ -26,7 +26,8 @@ import { Admin } from "./schema";
 import { SelectDropdown } from "@/components/select-dropdown";
 import { DatePicker } from "@/components/date-picker";
 import { useApi } from "@/hooks/use-api";
-import { useContext } from "./context";
+import { useAdmin } from "./context";
+import { toast } from "sonner";
 
 type DataForm = {
   id?: number | undefined;
@@ -111,7 +112,7 @@ interface Props {
 
 export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
   const { request } = useApi();
-  const { reload } = useContext();
+  const { reload } = useAdmin();
   const isEdit = !!currentRow;
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -121,33 +122,50 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
       lastName: currentRow?.lastName || "",
       email: currentRow?.email || "",
       password: "",
-      dateOfBirth: currentRow?.dateOfBirth 
-        ? new Date(currentRow.dateOfBirth) 
+      dateOfBirth: currentRow?.dateOfBirth
+        ? new Date(currentRow.dateOfBirth)
         : undefined,
       gender: currentRow?.gender || "",
       isEdit: isEdit,
     },
   });
 
-  const onSubmit = async (values: DataForm) => {
-    const { isEdit, id, ...rest } = values;
-    
-    const payload = {
-      ...rest,
-      dateOfBirth: values.dateOfBirth?.toISOString() ?? null,
-    };
-    const url = isEdit ? `/admin/${id}` : "/admin";
-    const method = isEdit ? "PUT" : "POST";
-
-    const res = await request(url, {
-      method: method,
-      body: JSON.stringify(payload),
+  const handleToast = (message: string) => {
+    toast(message, {
+      action: {
+        label: "Tutup",
+        onClick: () => {
+          console.log("tutup");
+        },
+      },
     });
-    
-    if (res.data !== undefined) {
-      reload();
-      form.reset();
-      onOpenChange(false);
+  };
+
+  const onSubmit = async (values: DataForm) => {
+    try {
+      const { isEdit, id, ...rest } = values;
+
+      const payload = {
+        ...rest,
+        dateOfBirth: values.dateOfBirth?.toISOString() ?? null,
+      };
+      const url = isEdit ? `/admin/${id}` : "/admin";
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await request(url, {
+        method: method,
+        body: JSON.stringify(payload),
+      });
+
+      if (res.data !== undefined) {
+        reload();
+        form.reset();
+        onOpenChange(false);
+        handleToast(res?.metaData?.message || "Success");
+      }
+    } catch (error: any) {
+      handleToast(error?.metaData?.message || "Internal Server Error");
+      console.log("🚀 ~ onSubmit ~ error:", error);
     }
   };
 
@@ -244,6 +262,7 @@ export function ActionDialog({ currentRow, open, onOpenChange }: Props) {
                     <DatePicker
                       selected={field.value}
                       onSelect={field.onChange}
+                      disabled={true}
                     />
                     <FormMessage className="col-span-4 col-start-3" />
                   </FormItem>
